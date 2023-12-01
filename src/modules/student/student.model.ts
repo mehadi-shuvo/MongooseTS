@@ -1,9 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { Student, StudentMethods, UserName } from './student.interface';
 import validator from 'validator';
-import bcrypt from 'bcrypt';
-import config from '../../app/config';
-
 const userNameSchema = new Schema<UserName>({
   firstName: {
     type: String,
@@ -29,7 +26,12 @@ const userNameSchema = new Schema<UserName>({
 const studentSchema = new Schema<Student, StudentMethods>(
   {
     id: { type: String, required: true, unique: true },
-    password: { type: String, required: [true, 'password is Required'] },
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'id required'],
+      unique: true,
+      ref: 'User',
+    },
     name: {
       type: userNameSchema,
       required: true,
@@ -88,19 +90,6 @@ studentSchema.statics.isUserExists = async function (id: string) {
 
 //   return existStudent;
 // };
-
-//=============HOOK / Middleware================
-
-studentSchema.pre('save', async function (next) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this;
-  user.password = await bcrypt.hash(user.password, Number(config.BCRYPT_SALT));
-  next();
-});
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
-});
 
 //virtual
 

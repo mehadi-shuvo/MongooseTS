@@ -1,34 +1,12 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { studentServices } from './student.service';
-import { studentSchema } from './student.validation';
+// import { studentSchema } from './student.validation';
 
-const createStudent = async (req: Request, res: Response) => {
-  try {
-    const { student } = await req.body;
-    const { error, value } = studentSchema.validate(student);
-    if (error) {
-      return res.status(500).json({
-        success: false,
-        message: 'ERROR FOUND',
-        data: error,
-      });
-    }
-    const result = await studentServices.createStudentToDB(value);
-    res.status(200).json({
-      success: true,
-      message: 'Student created successfully.',
-      data: result,
-    });
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error?.message || 'ERROR FOUND',
-      error: error,
-    });
-  }
-};
-
-const getAllStudents = async (req: Request, res: Response) => {
+const getAllStudents = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const result = await studentServices.getAllStudentsFromDB();
     res.status(200).json({
@@ -37,13 +15,14 @@ const getAllStudents = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    res.status(5000).json({
-      success: false,
-      error: error,
-    });
+    next(error);
   }
 };
-const findOneStudent = async (req: Request, res: Response) => {
+const findOneStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const studentId: string = req.params.studentId;
     const result = await studentServices.findOneStudentsFromDB(studentId);
@@ -53,13 +32,19 @@ const findOneStudent = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    res.status(5000).json({
-      success: false,
-      error: error,
-    });
+    // res.status(5000).json({
+    //   success: false,
+    //   error: error,
+    // });
+
+    next(error);
   }
 };
-const deleteOneStudent = async (req: Request, res: Response) => {
+const deleteOneStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const studentId: string = req.params.studentId;
     const result = await studentServices.deleteOneStudentsFromDB(studentId);
@@ -69,15 +54,16 @@ const deleteOneStudent = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    res.status(5000).json({
-      success: false,
-      error: error,
-    });
+    // res.status(5000).json({
+    //   success: false,
+    //   error: error,
+    // });
+    next(error);
   }
 };
 
 export const studentControllers = {
-  createStudent,
+  // createStudent,
   getAllStudents,
   deleteOneStudent,
   findOneStudent,
