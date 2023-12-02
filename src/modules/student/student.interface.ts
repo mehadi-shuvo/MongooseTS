@@ -24,6 +24,7 @@ export type Student = {
   };
   email: string;
   avatar?: string;
+  admissionSemester: Types.ObjectId;
   isDeleted: boolean;
 };
 

@@ -1,35 +1,33 @@
-import Joi from 'joi';
+import { z } from 'zod';
 
-const userNameSchema = Joi.object({
-  firstName: Joi.string()
-    .trim()
-    .min(1)
-    .max(20)
-    .required()
-    .error(new Error('String length must be between 1 and 20 characters')),
-  middleName: Joi.string().required(),
-  lastName: Joi.string().required(),
+const userNameValidationSchema = z.object({
+  firstName: z.string().trim().min(1).max(20),
+  middleName: z.string(),
+  lastName: z.string(),
 });
 
-const studentSchema = Joi.object({
-  id: Joi.string().required(),
-  password: Joi.string().required(),
-  name: userNameSchema.required(),
-  gender: Joi.string().valid('female', 'male').required(),
-  dateOfBirth: Joi.string().required(),
-  contactNumber: Joi.string().required(),
-  emergencyContactNo: Joi.string().required(),
-  bloodGroup: Joi.string()
-    .valid('A+', 'A-', 'O+', 'O-', 'B+', 'B-', 'AB+', 'AB-')
-    .required(),
-  Address: Joi.string().required(),
-  guardian: Joi.object({
-    fatherName: Joi.string().required(),
-    fatherContactNo: Joi.string().required(),
-  }).required(),
-  email: Joi.string().email().required(),
-  avatar: Joi.string(),
-  isDeleted: Joi.boolean(),
+const createStudentValidationSchema = z.object({
+  body: z.object({
+    password: z.string().max(20),
+    student: z.object({
+      name: userNameValidationSchema,
+      gender: z.enum(['female', 'male']),
+      dateOfBirth: z.string(),
+      contactNumber: z.string(),
+      emergencyContactNo: z.string(),
+      bloodGroup: z.enum(['A+', 'A-', 'O+', 'O-', 'B+', 'B-', 'AB+', 'AB-']),
+      Address: z.string(),
+      guardian: z.object({
+        fatherName: z.string(),
+        fatherContactNo: z.string(),
+      }),
+      email: z.string().email(),
+      admissionSemester: z.string(),
+      avatar: z.string(),
+    }),
+  }),
 });
 
-export { studentSchema };
+export const studentValidations = {
+  createStudentValidationSchema,
+};

@@ -63,6 +63,7 @@ const studentSchema = new Schema<Student, StudentMethods>(
       },
     },
     avatar: { type: String },
+    admissionSemester: { type: Schema.Types.ObjectId },
     isDeleted: {
       type: Boolean,
       default: false,

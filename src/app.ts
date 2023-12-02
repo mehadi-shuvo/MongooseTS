@@ -4,10 +4,8 @@
 import { Application, NextFunction, Request, Response } from 'express';
 import express from 'express';
 import cors from 'cors';
-import { studentRoutes } from './modules/student/student.router';
-import { UserRoutes } from './modules/user/user.router';
-import { globalErrorHandler } from './app/config/globalErrorHandler/globalErrorHandler';
-import { notFound } from './app/config/globalErrorHandler/notFound';
+import { globalErrorHandler } from './app/config/middlewares/globalErrorHandler';
+import { notFound } from './app/config/middlewares/notFound';
 import router from './app/routes';
 const app: Application = express();
 
