@@ -23,6 +23,7 @@ const createStudentValidationSchema = z.object({
       }),
       email: z.string().email(),
       admissionSemester: z.string(),
+      academicDepartment: z.string(),
       avatar: z.string(),
     }),
   }),

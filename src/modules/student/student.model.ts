@@ -63,7 +63,11 @@ const studentSchema = new Schema<Student, StudentMethods>(
       },
     },
     avatar: { type: String },
-    admissionSemester: { type: Schema.Types.ObjectId },
+    admissionSemester: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicSemester',
+    },
+    academicDepartment: { type: Schema.Types.ObjectId, ref: 'departments' },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -111,6 +115,11 @@ studentSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
 });
+// studentSchema.pre('findOneAndUpdate', function (next) {
+//   console.log(this);
+
+//   next();
+// });
 
 // model of student==========
 
